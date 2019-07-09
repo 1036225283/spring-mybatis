@@ -1,12 +1,16 @@
 package xws.controller;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import xws.dao.FamilyMapper;
 import xws.dao.UserMapper;
+import xws.entity.Family;
 import xws.entity.User;
 
 import java.util.Date;
@@ -26,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private FamilyMapper familyMapper;
 
 
     @Value("${spring.application.name}")
@@ -55,6 +62,26 @@ public class UserController {
             userMapper.insert(user);
         }
         return user;
+    }
+
+
+    @RequestMapping(value = "/insertFamily", method = RequestMethod.GET)
+    public String insertFamily(@RequestParam(value = "userId") Long userId) {
+
+        if (userId == null) {
+            return "userId is null";
+        }
+
+        Family family = new Family();
+        family.setPhone("13533244456");
+        family.setAddress("address");
+        family.setModifytime(new Date());
+        family.setCreatetime(new Date());
+        family.setName("刘备");
+        family.setRelationid((byte) 1);
+        family.setUserid(userId);
+        familyMapper.insert(family);
+        return JSON.toJSONString(family);
     }
 
 
